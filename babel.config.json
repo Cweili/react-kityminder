@@ -1,0 +1,39 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "loose": true,
+        "modules": false,
+        "exclude": [
+          "@babel/plugin-transform-typeof-symbol"
+        ]
+      }
+    ],
+    [
+      "@babel/preset-react",
+      {
+        "pragma": "createElement"
+      }
+    ]
+  ],
+  "env": {
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "loose": true,
+            "exclude": ["@babel/plugin-transform-typeof-symbol"]
+          }
+        ],
+        [
+          "@babel/preset-react",
+          {
+            "pragma": "createElement"
+          }
+        ]
+      ]
+    }
+  }
+}
