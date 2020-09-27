@@ -1,23 +1,35 @@
 import { createElement, useState, useEffect } from 'react'
 
-function isIntendToInput(e) {
-  if (e.ctrlKey || e.metaKey || e.altKey) return false
+import { getKeyCode } from '../utils'
+
+function isInputValue(e) {
+  const keyCode = getKeyCode(e)
 
   // a-zA-Z
-  if (e.keyCode >= 65 && e.keyCode <= 90) return true
+  if (keyCode >= 65 && keyCode <= 90) return true
 
   // 0-9 以及其上面的符号
-  if (e.keyCode >= 48 && e.keyCode <= 57) return true
+  if (keyCode >= 48 && keyCode <= 57) return true
 
   // 小键盘区域 (除回车外)
-  if (e.keyCode !== 108 && e.keyCode >= 96 && e.keyCode <= 111) return true
+  if (keyCode !== 108 && keyCode >= 96 && keyCode <= 111) return true
 
   // 小键盘区域 (除回车外)
   // @yinheli from pull request
-  if (e.keyCode !== 108 && e.keyCode >= 96 && e.keyCode <= 111) return true
+  if (keyCode !== 108 && keyCode >= 96 && keyCode <= 111) return true
+
+  return false
+}
+
+function isIntendToInput(e) {
+  const keyCode = getKeyCode(e)
+
+  if (e.ctrlKey || e.metaKey || e.altKey) return false
+
+  if (isInputValue(e)) return true
 
   // 输入法
-  if (e.keyCode === 229 || e.keyCode === 0) return true
+  if (keyCode === 229 || keyCode === 0) return true
 
   return false
 }
@@ -25,10 +37,9 @@ function isIntendToInput(e) {
 export default function EditorWrapper(minder, Editor, onEdit) {
   const [editingNode, setEditingNode] = useState()
 
-  const focusMinder = () => minder.getRenderTarget().focus()
   const exitEdit = () => {
     setEditingNode()
-    focusMinder()
+    minder.focus()
   }
 
   useEffect(() => {
@@ -37,6 +48,7 @@ export default function EditorWrapper(minder, Editor, onEdit) {
         const node = minder.getSelectedNode()
         const editingNode = {
           node,
+          value: isIntendToInput(e.originEvent) ? e.originEvent.key : '',
           point: node.getLayoutPoint()
         }
         setEditingNode(editingNode)
@@ -44,17 +56,15 @@ export default function EditorWrapper(minder, Editor, onEdit) {
     }
     const dblclickName = 'dblclick'
     const dblclickHandler = edit
-    const keydownName = 'keypress'
+    const keydownName = 'keydown'
     const keydownHandler = (e) => {
-      if (isIntendToInput(e.kityEvent.originEvent) && e.getTargetNode()) {
+      if (isIntendToInput(e.originEvent) && minder.getSelectedNode()) {
         edit(e)
       }
     }
     if (minder) {
       minder.on(dblclickName, dblclickHandler)
       minder.on(keydownName, keydownHandler)
-      const originalEditor = document.querySelector('.km-receiver')
-      originalEditor && originalEditor.remove()
     }
     return () => {
       if (minder) {
@@ -63,6 +73,19 @@ export default function EditorWrapper(minder, Editor, onEdit) {
       }
     }
   }, [minder, onEdit])
+
+  useEffect(() => {
+    const escHandler = (evt) => {
+      const keyCode = getKeyCode(evt)
+      if (keyCode === window.kityminder.KeyMap.esc) {
+        exitEdit()
+      }
+    }
+    document.addEventListener('keydown', escHandler)
+    return () => {
+      document.removeEventListener('keydown', escHandler)
+    }
+  }, [])
 
   return (props) => editingNode ? (
     <div
@@ -87,6 +110,7 @@ export default function EditorWrapper(minder, Editor, onEdit) {
         <div style={{ transform: 'translateX(-50%)' }}>
           <Editor
             {...props}
+            value={editingNode.value}
             onChange={(value) => {
               const { node } = editingNode
               node.setText(value)

@@ -3,7 +3,7 @@ import 'kity'
 import 'kityminder-core'
 
 import useValue from './hooks/value'
-import useEvents from './hooks/events'
+import { useEvents, eventNames } from './hooks/events'
 import useChangeHandler from './hooks/changeHandler'
 
 import Editor from './components/Editor'
@@ -11,9 +11,6 @@ import EditorWrapper from './components/EditorWrapper'
 
 import { upperFirst } from './utils'
 
-const eventNames = ('click,dblclick,mousedown,mousemove,mouseup,keydown,keyup,keypress,touchstart,touchend,touchmove,' +
-'beforeExecCommand,preExecCommand,afterExecCommand,' +
-'selectionchange,contentchange,interactchange').split(',')
 const handlerPropKeys = eventNames.map(eventName => `on${upperFirst(eventName)}`)
 const propKeys = [
   'value',
@@ -35,7 +32,6 @@ export default forwardRef(function Kityminder(props, ref) {
 
   if (!minder) {
     minder = minderRef.current = new window.kityminder.Minder(props)
-    minder._paper.on('keyup keydown keypress', minder._firePharse.bind(minder))
     if (ref) {
       ref.current = minder
     }
@@ -50,7 +46,14 @@ export default forwardRef(function Kityminder(props, ref) {
     <div {...domProps} style={{ position: 'relative', ...domProps.style }}>
       {useMemo(() => (
         <div
-          ref={div => minder.renderTo(div)}
+          ref={div => {
+            minder.renderTo(div)
+            Object.assign(div.querySelector('.km-receiver').style, {
+              position: 'absolute',
+              left: '-99999px',
+              top: '-99999px'
+            })
+          }}
           style={{
             position: 'absolute',
             top: 0,

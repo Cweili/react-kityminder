@@ -4,15 +4,15 @@ import { useEffect } from 'react'
 export default function useValue(minder, value) {
   useEffect(() => {
     if (minder) {
-      const animationOptionName = 'layoutAnimationDuration'
-      const animationDuration = minder.getOption(animationOptionName)
-      if (animationDuration) {
-        minder.setOption(animationOptionName, 0)
-      }
+      // const animationOptionName = 'layoutAnimationDuration'
+      // const animationDuration = minder.getOption(animationOptionName)
+      // if (animationDuration) {
+      //   minder.setOption(animationOptionName, 0)
+      // }
       minder.importJson(value)
-      if (animationDuration) {
-        minder.setOption(animationOptionName, animationDuration)
-      }
+      // if (animationDuration) {
+      //   minder.setOption(animationOptionName, animationDuration)
+      // }
     }
   }, [minder, value])
 }
