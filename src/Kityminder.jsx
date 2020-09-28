@@ -1,6 +1,4 @@
 import { createElement, useRef, useMemo, forwardRef } from 'react'
-import 'kity'
-import 'kityminder-core'
 
 import useValue from './hooks/value'
 import { useEvents, eventNames } from './hooks/events'
@@ -12,11 +10,13 @@ import EditorWrapper from './components/EditorWrapper'
 import { upperFirst } from './utils'
 
 const handlerPropKeys = eventNames.map(eventName => `on${upperFirst(eventName)}`)
-const propKeys = [
-  'value',
-  'editor',
-  'onChange'
-].concat(handlerPropKeys)
+const domPropNames = [
+  'id',
+  'className',
+  'style',
+  'title',
+  'tabIndex'
+]
 
 export default forwardRef(function Kityminder(props, ref) {
   const minderRef = useRef()
@@ -25,7 +25,7 @@ export default forwardRef(function Kityminder(props, ref) {
   const domProps = {}
 
   Object.keys(props).forEach((propKey) => {
-    if (propKeys.indexOf(propKey) < 0) {
+    if (domPropNames.indexOf(propKey) >= 0) {
       domProps[propKey] = props[propKey]
     }
   })
@@ -43,7 +43,15 @@ export default forwardRef(function Kityminder(props, ref) {
   const EditorComponent = EditorWrapper(minder, props.editor || Editor, props.onEdit)
 
   return (
-    <div {...domProps} style={{ position: 'relative', ...domProps.style }}>
+    <div
+      {...domProps}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '400px',
+        ...domProps.style
+      }}
+    >
       {useMemo(() => (
         <div
           ref={div => {
