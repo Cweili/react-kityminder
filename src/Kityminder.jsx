@@ -55,12 +55,17 @@ export default forwardRef(function Kityminder(props, ref) {
       {useMemo(() => (
         <div
           ref={div => {
-            minder.renderTo(div)
-            Object.assign(div.querySelector('.km-receiver').style, {
-              position: 'absolute',
-              left: '-99999px',
-              top: '-99999px'
-            })
+            if (div) {
+              minder.renderTo(div)
+              const receiver = div.querySelector('.km-receiver')
+              if (receiver) {
+                Object.assign(receiver.style, {
+                  position: 'absolute',
+                  left: '-99999px',
+                  top: '-99999px'
+                })
+              }
+            }
           }}
           style={{
             position: 'absolute',
