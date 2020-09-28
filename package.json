@@ -25,15 +25,15 @@
   "umd:main": "dist/react-kityminder.umd.js",
   "module": "dist/react-kityminder.esm.js",
   "esmodule": "dist/react-kityminder.modern.js",
-  "unpkg": "dist/react-kityminder.js",
-  "jsdelivr": "dist/react-kityminder.js",
+  "unpkg": "dist/react-kityminder.umd.js",
+  "jsdelivr": "dist/react-kityminder.umd.js",
   "source": "src/index.js",
   "sideEffects": false,
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle --jsx createElement --no-compress",
+    "build": "microbundle --jsx createElement --no-compress --globals react=React,kityminder-core=kityminder",
     "start": "microbundle watch -i example/index.jsx --jsx createElement --no-compress --format umd --external none --define process.env.NODE_ENV=\"\"",
     "lint": "eslint . --fix",
     "clean": "rimraf dist",
