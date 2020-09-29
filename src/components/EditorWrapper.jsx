@@ -49,7 +49,7 @@ export default function EditorWrapper(minder, Editor, onEdit) {
         const editingNode = {
           node,
           value: isIntendToInput(e.originEvent) ? e.originEvent.key : '',
-          point: node.getLayoutPoint()
+          box: node.getRenderBox('TextRenderer')
         }
         setEditingNode(editingNode)
       }
@@ -101,25 +101,25 @@ export default function EditorWrapper(minder, Editor, onEdit) {
       <div
         style={{
           position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: `translate(${editingNode.point.x}px, ${editingNode.point.y}px)`
+          top: `${editingNode.box.y}px`,
+          left: `${editingNode.box.x}px`,
+          transform: 'translateY(-50%)'
         }}
         onClick={e => e.stopPropagation()}
       >
-        <div style={{ transform: 'translateX(-50%)' }}>
-          <Editor
-            {...props}
-            value={editingNode.value}
-            onChange={(value) => {
-              const { node } = editingNode
-              node.setText(value)
-              minder.getRoot().renderTree()
-              exitEdit()
-            }}
-            onCancel={exitEdit}
-          />
-        </div>
+        <Editor
+          {...props}
+          value={editingNode.value}
+          onChange={(value) => {
+            const { node } = editingNode
+            node.setText(value)
+            minder.fire('contentchange')
+            minder.getRoot().renderTree()
+            minder.layout(300)
+            exitEdit()
+          }}
+          onCancel={exitEdit}
+        />
       </div>
     </div>
   ) : null
