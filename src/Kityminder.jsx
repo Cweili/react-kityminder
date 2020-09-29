@@ -32,6 +32,9 @@ export default forwardRef(function Kityminder(props, ref) {
 
   if (!minder) {
     minder = minderRef.current = new window.kityminder.Minder(props)
+    if (props.onMinderChange) {
+      props.onMinderChange(minder)
+    }
     if (ref) {
       ref.current = minder
     }
