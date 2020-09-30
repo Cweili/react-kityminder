@@ -86,7 +86,7 @@ export default function EditorWrapper(minder, Editor, onEdit) {
     return () => {
       document.removeEventListener('keydown', escHandler)
     }
-  }, [])
+  }, [minder])
 
   return (props) => editingNode ? (
     <div
