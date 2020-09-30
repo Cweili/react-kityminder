@@ -46,9 +46,10 @@ export default function EditorWrapper(minder, Editor, onEdit) {
     const edit = (e) => {
       if (((onEdit && onEdit(e) !== false) || !onEdit)) {
         const node = minder.getSelectedNode()
+        const { text = '' } = node.data
         const editingNode = {
           node,
-          value: isIntendToInput(e.originEvent) ? e.originEvent.key : '',
+          value: text + (isIntendToInput(e.originEvent) ? e.originEvent.key : ''),
           box: node.getRenderBox('TextRenderer')
         }
         setEditingNode(editingNode)

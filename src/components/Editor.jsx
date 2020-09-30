@@ -3,7 +3,7 @@ import { createElement, useState } from 'react'
 import { getKeyCode } from '../utils'
 
 export default function Editor(props) {
-  const [value, setValue] = useState()
+  const [value, setValue] = useState(props.value)
 
   const onKeydown = (evt) => {
     evt.stopPropagation()
@@ -24,7 +24,7 @@ export default function Editor(props) {
   return (
     <input
       autoFocus
-      value={value !== undefined ? value : props.value}
+      value={value}
       onChange={onChange}
       onKeyDown={onKeydown}
     />
