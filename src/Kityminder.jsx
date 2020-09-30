@@ -1,15 +1,12 @@
 import { createElement, useRef, useMemo, forwardRef } from 'react'
 
 import useValue from './hooks/value'
-import { useEvents, eventNames } from './hooks/events'
+import useEvents from './hooks/events'
 import useChangeHandler from './hooks/changeHandler'
 
 import Editor from './components/Editor'
 import EditorWrapper from './components/EditorWrapper'
 
-import { upperFirst } from './utils'
-
-const handlerPropKeys = eventNames.map(eventName => `on${upperFirst(eventName)}`)
 const domPropNames = [
   'id',
   'className',
@@ -41,7 +38,7 @@ export default forwardRef(function Kityminder(props, ref) {
   }
 
   useValue(minder, props.value)
-  useEvents(minder, props, handlerPropKeys)
+  useEvents(minder, props)
   useChangeHandler(minder, props.onChange)
   const EditorComponent = EditorWrapper(minder, props.editor || Editor, props.onEdit)
 

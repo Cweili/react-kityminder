@@ -114,6 +114,7 @@ export default function EditorWrapper(minder, Editor, onEdit) {
           onChange={(value) => {
             const { node } = editingNode
             node.setText(value)
+            minder.fire('nodechange')
             minder.fire('contentchange')
             minder.getRoot().renderTree()
             minder.layout(300)
