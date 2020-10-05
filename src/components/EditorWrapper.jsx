@@ -35,11 +35,21 @@ function isIntendToInput(e) {
 }
 
 export default function EditorWrapper(minder, Editor, onEdit) {
+  const [value, setValue] = useState()
   const [editingNode, setEditingNode] = useState()
 
   const exitEdit = () => {
     setEditingNode()
     minder.focus()
+  }
+  const onSubmit = () => {
+    const { node } = editingNode
+    node.setText(value)
+    minder.fire('nodechange')
+    minder.fire('contentchange')
+    minder.getRoot().renderTree()
+    minder.layout(300)
+    exitEdit()
   }
 
   useEffect(() => {
@@ -49,10 +59,10 @@ export default function EditorWrapper(minder, Editor, onEdit) {
         const { text = '' } = node.data
         const editingNode = {
           node,
-          value: text + (isIntendToInput(e.originEvent) ? e.originEvent.key : ''),
           box: node.getRenderBox('TextRenderer')
         }
         setEditingNode(editingNode)
+        setValue(text + (isIntendToInput(e.originEvent) ? e.originEvent.key : ''))
       }
     }
     const dblclickName = 'dblclick'
@@ -97,7 +107,7 @@ export default function EditorWrapper(minder, Editor, onEdit) {
         left: 0,
         right: 0
       }}
-      onClick={exitEdit}
+      onClick={onSubmit}
     >
       <div
         style={{
@@ -110,16 +120,9 @@ export default function EditorWrapper(minder, Editor, onEdit) {
       >
         <Editor
           {...props}
-          value={editingNode.value}
-          onChange={(value) => {
-            const { node } = editingNode
-            node.setText(value)
-            minder.fire('nodechange')
-            minder.fire('contentchange')
-            minder.getRoot().renderTree()
-            minder.layout(300)
-            exitEdit()
-          }}
+          value={value}
+          onSubmit={onSubmit}
+          onChange={setValue}
           onCancel={exitEdit}
         />
       </div>
