@@ -56,13 +56,16 @@ export default function EditorWrapper(minder, Editor, onEdit) {
     const edit = (e) => {
       if (((onEdit && onEdit(e) !== false) || !onEdit)) {
         const node = minder.getSelectedNode()
+        const box = node.getRenderBox('TextRenderer')
         const { text = '' } = node.data
         const editingNode = {
           node,
-          box: node.getRenderBox('TextRenderer')
+          box
         }
-        setEditingNode(editingNode)
-        setValue(text + (isIntendToInput(e.originEvent) ? e.originEvent.key : ''))
+        if (box.x > 0 || box.y > 0) {
+          setEditingNode(editingNode)
+          setValue(text + (isInputValue(e.originEvent) ? e.originEvent.key : ''))
+        }
       }
     }
     const dblclickName = 'dblclick'
