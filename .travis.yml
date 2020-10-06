@@ -6,4 +6,5 @@ cache:
     - node_modules
 script:
   - npm test
+  - npx nyc report --reporter=text-lcov > coverage.lcov
   - npx codecov
