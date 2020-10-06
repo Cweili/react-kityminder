@@ -6,7 +6,14 @@ module.exports = {
     'plugin:jest/recommended'
   ],
   env: {
-    browser: true
+    browser: true,
+    jest: true
+  },
+  globals: {
+    page: true,
+    browser: true,
+    context: true,
+    jestPuppeteer: true
   },
   parser: '@babel/eslint-parser',
   parserOptions: {

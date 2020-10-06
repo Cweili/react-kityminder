@@ -1,5 +1,5 @@
 module.exports = {
-  testEnvironment: 'jsdom',
+  preset: 'jest-puppeteer',
   moduleFileExtensions: ['js', 'json', 'jsx'],
   collectCoverageFrom: ['**/src/**/*.{js,jsx}', '!**/src/**/.*'],
   modulePaths: ['<rootDir>/src', '<rootDir>/node_modules'],

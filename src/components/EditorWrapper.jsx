@@ -14,10 +14,6 @@ function isInputValue(e) {
   // 小键盘区域 (除回车外)
   if (keyCode !== 108 && keyCode >= 96 && keyCode <= 111) return true
 
-  // 小键盘区域 (除回车外)
-  // @yinheli from pull request
-  if (keyCode !== 108 && keyCode >= 96 && keyCode <= 111) return true
-
   return false
 }
 
