@@ -34,7 +34,7 @@
   },
   "scripts": {
     "build": "microbundle --jsx createElement --no-compress --globals react=React,kityminder-core=kityminder",
-    "build:dev": "cross-env microbundle -i example/index.jsx --jsx createElement --no-compress --format iife --external react,react-dom,kity,kityminder-core --globals react=React,react-dom=ReactDOM,kityminder-core=kityminder --define process.env.NODE_ENV=\"\"",
+    "build:dev": "microbundle -i example/index.jsx --jsx createElement --no-compress --format iife --external react,react-dom,kity,kityminder-core --globals react=React,react-dom=ReactDOM,kityminder-core=kityminder --define process.env.NODE_ENV=\"\"",
     "dev": "npm run build:dev -- watch",
     "serve": "sirv -D",
     "lint": "eslint . --fix",
