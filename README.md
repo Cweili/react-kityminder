@@ -8,7 +8,7 @@
 
 [![github][badge-issues]][github]
 [![build][badge-build]][travis]
-<!--[![coverage][badge-coverage]][coveralls]-->
+[![coverage][badge-coverage]][coveralls]
 
 
 Mind map for react, based on [kityminder](https://github.com/fex-team/kityminder-core#readme).
