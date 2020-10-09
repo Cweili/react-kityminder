@@ -30,7 +30,10 @@ export default forwardRef(function Kityminder(props, ref) {
   if (!minder) {
     minder = minderRef.current = new window.kityminder.Minder(props)
     if (props.onMinderChange) {
-      props.onMinderChange(minder)
+      setTimeout(() => {
+        // fix warning: Cannot update a component while rendering a different component.
+        props.onMinderChange(minder)
+      }, 0)
     }
     if (ref) {
       ref.current = minder
@@ -76,7 +79,7 @@ export default forwardRef(function Kityminder(props, ref) {
           }}
         />
       ), [minder])}
-      <EditorComponent />
+      <EditorComponent {...props} />
     </div>
   )
 })

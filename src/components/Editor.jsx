@@ -25,6 +25,7 @@ export default function Editor(props) {
       value={props.value}
       onChange={onChange}
       onKeyDown={onKeydown}
+      onBlur={props.onSubmit}
     />
   )
 }

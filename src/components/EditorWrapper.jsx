@@ -1,4 +1,4 @@
-import { createElement, useState, useEffect } from 'react'
+import { createElement, useState, useEffect, useMemo } from 'react'
 
 import { getKeyCode } from '../utils'
 
@@ -97,7 +97,7 @@ export default function EditorWrapper(minder, Editor, onEdit) {
     }
   }, [minder])
 
-  return (props) => editingNode ? (
+  return useMemo(() => (props) => editingNode ? (
     <div
       style={{
         position: 'absolute',
@@ -119,6 +119,7 @@ export default function EditorWrapper(minder, Editor, onEdit) {
       >
         <Editor
           {...props}
+          minder={minder}
           value={value}
           onSubmit={onSubmit}
           onChange={setValue}
@@ -126,5 +127,5 @@ export default function EditorWrapper(minder, Editor, onEdit) {
         />
       </div>
     </div>
-  ) : null
+  ) : null, [minder, Editor, value, editingNode])
 }
