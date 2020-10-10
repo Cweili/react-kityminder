@@ -43,7 +43,9 @@ export default forwardRef(function Kityminder(props, ref) {
   useValue(minder, props.value)
   useEvents(minder, props)
   useChangeHandler(minder, props.onChange)
-  const EditorComponent = EditorWrapper(minder, props.editor || Editor, props.onEdit)
+  const EditorComponent = EditorWrapper(minder, Object.assign({
+    editor: Editor
+  }, props))
 
   return (
     <div

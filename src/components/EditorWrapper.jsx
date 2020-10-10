@@ -1,4 +1,4 @@
-import { createElement, useState, useEffect, useMemo } from 'react'
+import { createElement, useState, useEffect, useRef, useMemo } from 'react'
 
 import { getKeyCode } from '../utils'
 
@@ -30,21 +30,35 @@ function isIntendToInput(e) {
   return false
 }
 
-export default function EditorWrapper(minder, Editor, onEdit) {
+export default function EditorWrapper(minder, props) {
+  const valueRef = useRef()
   const [value, setValue] = useState()
   const [editingNode, setEditingNode] = useState()
+
+  const {
+    editor: Editor,
+    onEdit,
+    onEditEnd
+  } = props
+
+  const setEditorValue = v => {
+    valueRef.current = v
+    setValue(v)
+  }
 
   const exitEdit = () => {
     setEditingNode()
     minder.focus()
   }
-  const onSubmit = () => {
+  const onSubmit = (...args) => {
     const { node } = editingNode
-    node.setText(value)
-    minder.fire('nodechange')
-    minder.fire('contentchange')
-    minder.getRoot().renderTree()
-    minder.layout(300)
+    if (node && (!onEditEnd || (onEditEnd && onEditEnd(...args) !== false))) {
+      node.setText(valueRef.current)
+      minder.fire('nodechange')
+      minder.fire('contentchange')
+      minder.getRoot().renderTree()
+      minder.layout(300)
+    }
     exitEdit()
   }
 
@@ -60,7 +74,7 @@ export default function EditorWrapper(minder, Editor, onEdit) {
         }
         if (box.x > 0 || box.y > 0) {
           setEditingNode(editingNode)
-          setValue(text + (isInputValue(e.originEvent) ? e.originEvent.key : ''))
+          setEditorValue(text + (isInputValue(e.originEvent) ? e.originEvent.key : ''))
         }
       }
     }
@@ -122,7 +136,7 @@ export default function EditorWrapper(minder, Editor, onEdit) {
           minder={minder}
           value={value}
           onSubmit={onSubmit}
-          onChange={setValue}
+          onChange={setEditorValue}
           onCancel={exitEdit}
         />
       </div>
