@@ -66,17 +66,19 @@ export default function EditorWrapper(minder, props) {
     const edit = (e) => {
       if (((onEdit && onEdit(e) !== false) || !onEdit)) {
         const node = minder.getSelectedNode()
-        const box = node.getRenderBox('TextRenderer')
-        const { text = '' } = node.data
-        const editingNode = {
-          node,
-          box
-        }
-        if (box.x > 0 || box.y > 0) {
-          const value = text + (isInputValue(e.originEvent) ? e.originEvent.key : '')
-          setEditingNode(editingNode)
-          setInitialValue(value)
-          setEditorValue(value)
+        if (node) {
+          const box = node.getRenderBox('TextRenderer')
+          const { text = '' } = node.data
+          const editingNode = {
+            node,
+            box
+          }
+          if (box.x > 0 || box.y > 0) {
+            const value = text + (isInputValue(e.originEvent) ? e.originEvent.key : '')
+            setEditingNode(editingNode)
+            setInitialValue(value)
+            setEditorValue(value)
+          }
         }
       }
     }
