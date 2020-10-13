@@ -32,7 +32,8 @@ function isIntendToInput(e) {
 
 export default function EditorWrapper(minder, props) {
   const valueRef = useRef()
-  const [value, setValue] = useState()
+  const editorRef = useRef()
+  const [initialValue, setInitialValue] = useState()
   const [editingNode, setEditingNode] = useState()
 
   const {
@@ -43,7 +44,6 @@ export default function EditorWrapper(minder, props) {
 
   const setEditorValue = v => {
     valueRef.current = v
-    setValue(v)
   }
 
   const exitEdit = () => {
@@ -54,7 +54,7 @@ export default function EditorWrapper(minder, props) {
     const { node } = editingNode
     if (node && (!onEditEnd || (onEditEnd && onEditEnd(...args) !== false))) {
       node.setText(valueRef.current)
-      minder.fire('nodechange')
+      minder.fire('nodechange', node)
       minder.fire('contentchange')
       minder.getRoot().renderTree()
       minder.layout(300)
@@ -73,8 +73,10 @@ export default function EditorWrapper(minder, props) {
           box
         }
         if (box.x > 0 || box.y > 0) {
+          const value = text + (isInputValue(e.originEvent) ? e.originEvent.key : '')
           setEditingNode(editingNode)
-          setEditorValue(text + (isInputValue(e.originEvent) ? e.originEvent.key : ''))
+          setInitialValue(value)
+          setEditorValue(value)
         }
       }
     }
@@ -111,6 +113,23 @@ export default function EditorWrapper(minder, props) {
     }
   }, [minder])
 
+  useEffect(() => {
+    if (minder && editingNode && editorRef.current) {
+      let inputEl
+      for (const type of [
+        'input',
+        'textarea',
+        'select'
+      ]) {
+        inputEl = editorRef.current.querySelector(type)
+        if (inputEl) {
+          inputEl.focus()
+          break
+        }
+      }
+    }
+  }, [minder, Editor, initialValue, editingNode])
+
   return useMemo(() => (props) => editingNode ? (
     <div
       style={{
@@ -123,6 +142,7 @@ export default function EditorWrapper(minder, props) {
       onClick={onSubmit}
     >
       <div
+        ref={editorRef}
         style={{
           position: 'absolute',
           top: `${editingNode.box.y}px`,
@@ -134,12 +154,12 @@ export default function EditorWrapper(minder, props) {
         <Editor
           {...props}
           minder={minder}
-          value={value}
+          initialValue={initialValue}
           onSubmit={onSubmit}
           onChange={setEditorValue}
           onCancel={exitEdit}
         />
       </div>
     </div>
-  ) : null, [minder, Editor, value, editingNode])
+  ) : null, [minder, Editor, initialValue, editingNode])
 }

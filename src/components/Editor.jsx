@@ -1,8 +1,10 @@
-import { createElement } from 'react'
+import { createElement, useState } from 'react'
 
 import { getKeyCode } from '../utils'
 
 export default function Editor(props) {
+  const [value, setValue] = useState(props.initialValue)
+
   const onKeydown = (evt) => {
     evt.stopPropagation()
     const { KeyMap } = window.kityminder
@@ -15,14 +17,14 @@ export default function Editor(props) {
     }
   }
 
-  const onChange = (evt) => {
-    props.onChange(evt.target.value)
+  const onChange = ({ target: { value } }) => {
+    setValue(value)
+    props.onChange(value)
   }
 
   return (
     <input
-      autoFocus
-      value={props.value}
+      value={value}
       onChange={onChange}
       onKeyDown={onKeydown}
       onBlur={props.onSubmit}
