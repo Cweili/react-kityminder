@@ -32,6 +32,7 @@ function isIntendToInput(e) {
 
 export default function EditorWrapper(minder, props) {
   const valueRef = useRef()
+  const editingNodeRef = useRef()
   const editorRef = useRef()
   const [initialValue, setInitialValue] = useState()
   const [editingNode, setEditingNode] = useState()
@@ -46,15 +47,21 @@ export default function EditorWrapper(minder, props) {
     valueRef.current = v
   }
 
+  const setEditorEditingNode = v => {
+    editingNodeRef.current = v
+    setEditingNode(v)
+  }
+
   const exitEdit = () => {
-    setEditingNode()
+    setEditorEditingNode()
     minder.focus()
   }
   const onSubmit = (...args) => {
-    const { node } = editingNode
+    const { node } = editingNodeRef.current || {}
     if (node && (!onEditEnd || (onEditEnd && onEditEnd(...args) !== false))) {
       node.setText(valueRef.current)
-      minder.fire('nodechange', node)
+      minder.select(node, true)
+      minder.fire('nodechange')
       minder.fire('contentchange')
       minder.getRoot().renderTree()
       minder.layout(300)
@@ -74,8 +81,11 @@ export default function EditorWrapper(minder, props) {
             box
           }
           if (box.x > 0 || box.y > 0) {
-            const value = text + (isInputValue(e.originEvent) ? e.originEvent.key : '')
-            setEditingNode(editingNode)
+            let value = text
+            if (props.appendKey) {
+              value += isInputValue(e.originEvent) ? e.originEvent.key : ''
+            }
+            setEditorEditingNode(editingNode)
             setInitialValue(value)
             setEditorValue(value)
           }

@@ -38,6 +38,7 @@ function App() {
         height: '600px'
       }}
       onChange={onChange}
+      appendKey
     />
   )
 }
