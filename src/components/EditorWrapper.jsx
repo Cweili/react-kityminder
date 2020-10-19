@@ -38,7 +38,7 @@ export default function EditorWrapper(minder, props) {
   const [editingNode, setEditingNode] = useState()
 
   const {
-    editor: Editor,
+    Editor,
     onEdit,
     onEditEnd
   } = props
@@ -61,7 +61,7 @@ export default function EditorWrapper(minder, props) {
     if (node && (!onEditEnd || (onEditEnd && onEditEnd(...args) !== false))) {
       node.setText(valueRef.current)
       minder.select(node, true)
-      minder.fire('nodechange')
+      minder.fire('nodechange', { node })
       minder.fire('contentchange')
       minder.getRoot().renderTree()
       minder.layout(300)
@@ -74,7 +74,7 @@ export default function EditorWrapper(minder, props) {
       if (((onEdit && onEdit(e) !== false) || !onEdit)) {
         const node = minder.getSelectedNode()
         if (node) {
-          const box = node.getRenderBox('TextRenderer')
+          const box = node.getRenderer('OutlineRenderer').getRenderShape().getRenderBox('view')
           const { text = '' } = node.data
           const editingNode = {
             node,
@@ -92,6 +92,8 @@ export default function EditorWrapper(minder, props) {
         }
       }
     }
+    const editNodeName = 'editnode'
+    const editNodeHandler = edit
     const dblclickName = 'dblclick'
     const dblclickHandler = edit
     const keydownName = 'keydown'
@@ -101,11 +103,13 @@ export default function EditorWrapper(minder, props) {
       }
     }
     if (minder) {
+      minder.on(editNodeName, editNodeHandler)
       minder.on(dblclickName, dblclickHandler)
       minder.on(keydownName, keydownHandler)
     }
     return () => {
       if (minder) {
+        minder.off(editNodeName, editNodeHandler)
         minder.off(dblclickName, dblclickHandler)
         minder.off(keydownName, keydownHandler)
       }
@@ -157,7 +161,7 @@ export default function EditorWrapper(minder, props) {
         ref={editorRef}
         style={{
           position: 'absolute',
-          top: `${editingNode.box.y}px`,
+          top: `${editingNode.box.y + editingNode.box.height / 2}px`,
           left: `${editingNode.box.x}px`,
           transform: 'translateY(-50%)'
         }}
