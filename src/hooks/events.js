@@ -9,7 +9,8 @@ const eventNames = (
   'click,dblclick,mousedown,mousemove,mouseup,keydown,keyup,keypress,touchstart,touchend,touchmove,' +
   'beforeExecCommand,preExecCommand,afterExecCommand,' +
   'selectionchange,contentchange,interactchange,' +
-  'nodechange'
+  'editnoterequest,shownoterequest,hidenoterequest,' +
+  'nodechange,editnode'
 ).split(',')
 const handlerPropKeys = eventNames.map(
   (eventName) => `on${upperFirst(eventName)}`

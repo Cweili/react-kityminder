@@ -21,7 +21,12 @@ function App() {
         { data: { text: '视频' } },
         { data: { text: '地图' } },
         { data: { text: '百科' } },
-        { data: { text: '更多' } }
+        {
+          data: {
+            text: '更多',
+            note: '注释'
+          }
+        }
       ]
     }
   })
@@ -31,15 +36,17 @@ function App() {
   }
 
   return (
-    <Kityminder
-      ref={minder}
-      value={value}
-      style={{
-        height: '600px'
-      }}
-      onChange={onChange}
-      appendKey
-    />
+    <div style={{ margin: '10px', padding: '10px' }}>
+      <Kityminder
+        ref={minder}
+        value={value}
+        style={{
+          height: '600px'
+        }}
+        onChange={onChange}
+        appendKey
+      />
+    </div>
   )
 }
 

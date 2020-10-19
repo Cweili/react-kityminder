@@ -6,6 +6,8 @@ import useChangeHandler from './hooks/changeHandler'
 
 import Editor from './components/Editor'
 import EditorWrapper from './components/EditorWrapper'
+import Note from './components/Note'
+import NoteWrapper from './components/NoteWrapper'
 
 const domPropNames = [
   'id',
@@ -44,7 +46,10 @@ export default forwardRef(function Kityminder(props, ref) {
   useEvents(minder, props)
   useChangeHandler(minder, props.onChange)
   const EditorComponent = EditorWrapper(minder, Object.assign({
-    editor: Editor
+    Editor
+  }, props))
+  const NoteComponent = NoteWrapper(minder, Object.assign({
+    Note
   }, props))
 
   return (
@@ -82,6 +87,7 @@ export default forwardRef(function Kityminder(props, ref) {
         />
       ), [minder])}
       <EditorComponent {...props} />
+      <NoteComponent {...props} />
     </div>
   )
 })
